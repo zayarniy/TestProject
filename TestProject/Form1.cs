@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using Helper;
 
 namespace TestProject
 {
@@ -17,42 +18,48 @@ namespace TestProject
         //System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         Progress<Info> progress;
         FilesSeek FilesSeek = new FilesSeek();
-        string[] files=null;
+        Dictionary<string, string[]> files =null;
 
         public Form1()
         {
             InitializeComponent();
-            progress = new Progress<Info>(
-                (info) =>
-                {
-                    if (FilesSeek.Status==SeekStatus.Done)
-                    {
-                        tsslStatus.Text = "Search is done";
-                        btnStartSeach.Enabled = true;
-                        //tsProgressBar.Value = 0;
-                        btnStop.Enabled = false;
-                        btnPause.Enabled = false;
-                        return;
-                    }
-                    if (FilesSeek.Status==SeekStatus.Pause)
-                    {
-                        tsslStatus.Text = "Search is pause";
-                        return;
-                    }
-                    tsslTimeSpan.Text = $"Spent:{(DateTime.Now - (DateTime)tsslTimeSpan.Tag).TotalSeconds:F2}";
-                    tsProgressBar.Value = info.i;
-                    tsslCurrentFile.Text = FilesSeek.CurrentFile;
-                    tsslFileCounter.Text = info.i.ToString();
-                    if (info.isIt)
-                    {
-                        tvFindedFiles.Nodes.Add(files[info.i]);
-                    }
-
-                }
-                );
             tbFindingText.DataBindings.Add("Text", Properties.Settings.Default, "Text");
             tbFolder.DataBindings.Add("Text", Properties.Settings.Default, "Folder");
             tbTemplate.DataBindings.Add("Text", Properties.Settings.Default, "Template");
+            Helper.Help.SetFileSystemTreeView(tvFindedFiles,"C:\\System");
+            progress = new Progress<Info>(
+                (info) =>
+                {
+                    switch (FilesSeek.Status)
+                    {
+                        case SeekStatus.Done:
+                            tsslStatus.Text = "Search is done";
+                            btnStartSeach.Enabled = true;
+                            //tsProgressBar.Value = 0;
+                            btnStop.Enabled = false;
+                            btnPause.Enabled = false;
+                            return;
+                        case SeekStatus.Pause:
+                            tsslStatus.Text = "Search pause";
+                            return;
+                        case SeekStatus.Progress:
+                            tsslTimeSpan.Text = $"Spent:{(DateTime.Now - (DateTime)tsslTimeSpan.Tag).TotalSeconds:F0}";
+                            if (info.isIt == null)
+                            {
+                                tsslCurrentFile.Text = FilesSeek.CurrentFile;
+                                tsProgressBar.Value = info.i;
+                                tsslFileCounter.Text = info.i.ToString();
+
+                            }
+                            else
+                            if ((bool)info.isIt)
+                            {
+                                tvFindedFiles.Nodes.Add(FilesSeek.CurrentFile);
+                            }
+                            break;
+                    }
+                }
+                );
 
         }
 
@@ -68,28 +75,14 @@ namespace TestProject
             if (fbd.ShowDialog()==DialogResult.OK)
             {
                 tbFolder.Text = fbd.SelectedPath;
-                FilesSeek.Current = 0;
+                FilesSeek.CurrentFileIndex = 0;
                 tsslCurrentFile.Text = "";
                 tsslStatus.Text = "";
                 tsslTimeSpan.Text = "";
                 Properties.Settings.Default.Save();
-
+                tvFindedFiles.Nodes.Clear();
+                Helper.Help.SetFileSystemTreeView(tvFindedFiles, tbFolder.Text);
             }
-        }
-
-        string[] LoadList(string Folder, string Pattern,bool AllDirectories)
-        {
-            string[] files;
-            try
-            {
-                files = Directory.GetFiles(Folder, Pattern, AllDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return null;
-            }
-            return files;
         }
 
         async void Start()
@@ -98,34 +91,36 @@ namespace TestProject
             {
                 case SeekStatus.Pause:
                     {
-                        FilesSeek.Status = SeekStatus.Progress;                        
-                        var state = await Task.Factory.StartNew<Info>(() => FilesSeek.Start(progress), TaskCreationOptions.LongRunning);
+                        FilesSeek.Status = SeekStatus.Progress;
+
+                        //Task<Info> state =Task.Factory.StartNew<Info>(() => FilesSeek.Start(progress), TaskCreationOptions.LongRunning);
+                        var state = Task.Run<Info>(()=>FilesSeek.Start(progress,tvFindedFiles.Nodes[0]));
+                        var res = await state;
                     }
                     break;
                 case SeekStatus.Done:
                     {
-                        files = LoadList(tbFolder.Text, tbTemplate.Text, cbAllDirectories.Checked);
-                        if (files == null) return;
-                        FilesSeek.Current = 0;
+                        //FilesSeek.LoadList(tbFolder.Text, tbTemplate.Text, cbAllDirectories.Checked);
+                        Helper.Help.SetFileSystemTreeView(tvFindedFiles, tbFolder.Text);
+                        //if (files == null) return;
+                        FilesSeek.CurrentFileIndex = 0;
                         tvFindedFiles.Nodes.Clear();
                         FilesSeek.Status = SeekStatus.Progress;
                         btnStartSeach.Enabled = false;
                         btnStop.Enabled = true;
                         btnPause.Enabled = true;
                         tsProgressBar.Minimum = 0;
-                        tsProgressBar.Value = FilesSeek.Current;
-                        tsProgressBar.Maximum = files.Length - 1;
-                        FilesSeek.files = files;
+                        tsProgressBar.Value = FilesSeek.CurrentFileIndex;
+                        tsProgressBar.Maximum =  files[FilesSeek.CurrentPath].Length - 1;
+                        //FilesSeek.filses = files;
                         FilesSeek.textToFind = tbFindingText.Text;
                         tsslStatus.Text = "Search is progress";
                         tsslTimeSpan.Tag = (DateTime)DateTime.Now;
-                        var state = await Task.Factory.StartNew<Info>(() => FilesSeek.Start(progress), TaskCreationOptions.LongRunning);
+                        var state = await Task.Factory.StartNew<Info>(() => FilesSeek.Start(progress,tvFindedFiles.Nodes[FilesSeek.CurrentPath]), TaskCreationOptions.LongRunning);
                         break;
                     }
                 case SeekStatus.Progress:
                     break;
-                        
-
             }
 
         }
@@ -134,6 +129,7 @@ namespace TestProject
         {
             if (Directory.Exists(tbFolder.Text))
             {
+                tvFindedFiles.Nodes.Clear();
                 Start();                                
             }
         }
@@ -188,6 +184,16 @@ namespace TestProject
             tbFindingText.Text = Properties.Settings.Default.Text;
             tbFolder.Text = Properties.Settings.Default.Folder;
             tbTemplate.Text = Properties.Settings.Default.Template;
+        }
+
+        private void tvFindedFiles_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            tsslFolder.Text = e.Node.FullPath;
+        }
+
+        private void tvFindedFiles_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            tsslFolder.Text = e.Node.FullPath;
         }
     }
 }
