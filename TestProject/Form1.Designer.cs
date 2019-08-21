@@ -39,13 +39,13 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.tsProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.tsslStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslTimeSpan = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslFileCounter = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslFindedFiles = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslAllFiles = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslCurrentFile = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslFolder = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lbFindedFiles = new System.Windows.Forms.ListBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -55,14 +55,10 @@
             this.tbTemplate = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tbFindingText = new System.Windows.Forms.TextBox();
-            this.btnStartSeach = new System.Windows.Forms.Button();
+            this.btnStartSearch = new System.Windows.Forms.Button();
             this.btnPause = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
-            this.tvFindedFiles = new System.Windows.Forms.TreeView();
-            this.lbFiles = new System.Windows.Forms.ListBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.tsslFolder = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsmiReadListOfFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -94,8 +90,7 @@
             this.tsmiLogShow,
             this.tsmiClearLogFile,
             this.toolStripMenuItem1,
-            this.exitToolStripMenuItem,
-            this.tsmiReadListOfFolder});
+            this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 25);
             this.fileToolStripMenuItem.Text = "File";
@@ -103,40 +98,40 @@
             // tsmiSetFolder
             // 
             this.tsmiSetFolder.Name = "tsmiSetFolder";
-            this.tsmiSetFolder.Size = new System.Drawing.Size(209, 26);
+            this.tsmiSetFolder.Size = new System.Drawing.Size(180, 26);
             this.tsmiSetFolder.Text = "Set folder";
             this.tsmiSetFolder.Click += new System.EventHandler(this.tsmiSetFolder_Click);
             // 
             // tsmiSave
             // 
             this.tsmiSave.Name = "tsmiSave";
-            this.tsmiSave.Size = new System.Drawing.Size(209, 26);
+            this.tsmiSave.Size = new System.Drawing.Size(180, 26);
             this.tsmiSave.Text = "Save";
             this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
             // 
             // tsmiLogShow
             // 
             this.tsmiLogShow.Name = "tsmiLogShow";
-            this.tsmiLogShow.Size = new System.Drawing.Size(209, 26);
+            this.tsmiLogShow.Size = new System.Drawing.Size(180, 26);
             this.tsmiLogShow.Text = "Show log";
             this.tsmiLogShow.Click += new System.EventHandler(this.tsmiLogShow_Click);
             // 
             // tsmiClearLogFile
             // 
             this.tsmiClearLogFile.Name = "tsmiClearLogFile";
-            this.tsmiClearLogFile.Size = new System.Drawing.Size(209, 26);
+            this.tsmiClearLogFile.Size = new System.Drawing.Size(180, 26);
             this.tsmiClearLogFile.Text = "Clear log";
             this.tsmiClearLogFile.Click += new System.EventHandler(this.tsmiClearLogFile_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(206, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(209, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -144,7 +139,6 @@
             // 
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsProgressBar,
             this.tsslStatus,
             this.tsslTimeSpan,
             this.tsslFileCounter,
@@ -152,47 +146,47 @@
             this.tsslAllFiles,
             this.tsslCurrentFile,
             this.tsslFolder});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 730);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 739);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1184, 31);
+            this.statusStrip1.Size = new System.Drawing.Size(1184, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // tsProgressBar
-            // 
-            this.tsProgressBar.Name = "tsProgressBar";
-            this.tsProgressBar.Size = new System.Drawing.Size(300, 25);
             // 
             // tsslStatus
             // 
             this.tsslStatus.Name = "tsslStatus";
-            this.tsslStatus.Size = new System.Drawing.Size(0, 26);
+            this.tsslStatus.Size = new System.Drawing.Size(0, 17);
             // 
             // tsslTimeSpan
             // 
             this.tsslTimeSpan.Name = "tsslTimeSpan";
-            this.tsslTimeSpan.Size = new System.Drawing.Size(0, 26);
+            this.tsslTimeSpan.Size = new System.Drawing.Size(0, 17);
             // 
             // tsslFileCounter
             // 
             this.tsslFileCounter.Name = "tsslFileCounter";
-            this.tsslFileCounter.Size = new System.Drawing.Size(0, 26);
+            this.tsslFileCounter.Size = new System.Drawing.Size(0, 17);
             // 
             // tsslFindedFiles
             // 
             this.tsslFindedFiles.Name = "tsslFindedFiles";
-            this.tsslFindedFiles.Size = new System.Drawing.Size(0, 26);
+            this.tsslFindedFiles.Size = new System.Drawing.Size(0, 17);
             // 
             // tsslAllFiles
             // 
             this.tsslAllFiles.Name = "tsslAllFiles";
-            this.tsslAllFiles.Size = new System.Drawing.Size(0, 26);
+            this.tsslAllFiles.Size = new System.Drawing.Size(0, 17);
             // 
             // tsslCurrentFile
             // 
             this.tsslCurrentFile.Name = "tsslCurrentFile";
-            this.tsslCurrentFile.Size = new System.Drawing.Size(0, 26);
+            this.tsslCurrentFile.Size = new System.Drawing.Size(0, 17);
+            // 
+            // tsslFolder
+            // 
+            this.tsslFolder.Name = "tsslFolder";
+            this.tsslFolder.Size = new System.Drawing.Size(0, 17);
             // 
             // splitContainer1
             // 
@@ -208,7 +202,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel1);
-            this.splitContainer1.Size = new System.Drawing.Size(1184, 699);
+            this.splitContainer1.Size = new System.Drawing.Size(1184, 708);
             this.splitContainer1.SplitterDistance = 715;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 3;
@@ -220,7 +214,7 @@
             this.lbFindedFiles.ItemHeight = 20;
             this.lbFindedFiles.Location = new System.Drawing.Point(0, 0);
             this.lbFindedFiles.Name = "lbFindedFiles";
-            this.lbFindedFiles.Size = new System.Drawing.Size(715, 699);
+            this.lbFindedFiles.Size = new System.Drawing.Size(715, 708);
             this.lbFindedFiles.TabIndex = 1;
             // 
             // flowLayoutPanel1
@@ -231,16 +225,14 @@
             this.flowLayoutPanel1.Controls.Add(this.tbTemplate);
             this.flowLayoutPanel1.Controls.Add(this.label3);
             this.flowLayoutPanel1.Controls.Add(this.tbFindingText);
-            this.flowLayoutPanel1.Controls.Add(this.btnStartSeach);
+            this.flowLayoutPanel1.Controls.Add(this.btnStartSearch);
             this.flowLayoutPanel1.Controls.Add(this.btnPause);
             this.flowLayoutPanel1.Controls.Add(this.btnStop);
-            this.flowLayoutPanel1.Controls.Add(this.tvFindedFiles);
-            this.flowLayoutPanel1.Controls.Add(this.lbFiles);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(463, 699);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(463, 708);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -249,9 +241,9 @@
             this.label1.Location = new System.Drawing.Point(4, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 20);
+            this.label1.Size = new System.Drawing.Size(88, 20);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Startpath";
+            this.label1.Text = "Start folder";
             // 
             // tbFolder
             // 
@@ -262,6 +254,7 @@
             this.tbFolder.Size = new System.Drawing.Size(480, 26);
             this.tbFolder.TabIndex = 1;
             this.tbFolder.Text = "D:\\Temp\\";
+            this.tbFolder.DoubleClick += new System.EventHandler(this.tbFolder_DoubleClick);
             // 
             // label2
             // 
@@ -269,9 +262,9 @@
             this.label2.Location = new System.Drawing.Point(4, 56);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 20);
+            this.label2.Size = new System.Drawing.Size(61, 20);
             this.label2.TabIndex = 2;
-            this.label2.Text = "File template";
+            this.label2.Text = "Pattern";
             // 
             // tbTemplate
             // 
@@ -304,16 +297,16 @@
             this.tbFindingText.TabIndex = 5;
             this.tbFindingText.Text = "0";
             // 
-            // btnStartSeach
+            // btnStartSearch
             // 
-            this.btnStartSeach.Location = new System.Drawing.Point(4, 234);
-            this.btnStartSeach.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnStartSeach.Name = "btnStartSeach";
-            this.btnStartSeach.Size = new System.Drawing.Size(112, 35);
-            this.btnStartSeach.TabIndex = 6;
-            this.btnStartSeach.Text = "Start";
-            this.btnStartSeach.UseVisualStyleBackColor = true;
-            this.btnStartSeach.Click += new System.EventHandler(this.btnStartSeach_Click);
+            this.btnStartSearch.Location = new System.Drawing.Point(4, 234);
+            this.btnStartSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnStartSearch.Name = "btnStartSearch";
+            this.btnStartSearch.Size = new System.Drawing.Size(112, 35);
+            this.btnStartSearch.TabIndex = 6;
+            this.btnStartSearch.Text = "Start";
+            this.btnStartSearch.UseVisualStyleBackColor = true;
+            this.btnStartSearch.Click += new System.EventHandler(this.btnStartSeach_Click);
             // 
             // btnPause
             // 
@@ -340,41 +333,9 @@
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
-            // tvFindedFiles
-            // 
-            this.tvFindedFiles.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tvFindedFiles.Location = new System.Drawing.Point(4, 279);
-            this.tvFindedFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tvFindedFiles.Name = "tvFindedFiles";
-            this.tvFindedFiles.Size = new System.Drawing.Size(450, 250);
-            this.tvFindedFiles.TabIndex = 11;
-            this.tvFindedFiles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvFindedFiles_AfterSelect);
-            // 
-            // lbFiles
-            // 
-            this.lbFiles.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lbFiles.FormattingEnabled = true;
-            this.lbFiles.ItemHeight = 20;
-            this.lbFiles.Location = new System.Drawing.Point(3, 537);
-            this.lbFiles.Name = "lbFiles";
-            this.lbFiles.Size = new System.Drawing.Size(450, 164);
-            this.lbFiles.TabIndex = 12;
-            // 
             // errorProvider1
             // 
             this.errorProvider1.ContainerControl = this;
-            // 
-            // tsslFolder
-            // 
-            this.tsslFolder.Name = "tsslFolder";
-            this.tsslFolder.Size = new System.Drawing.Size(0, 26);
-            // 
-            // tsmiReadListOfFolder
-            // 
-            this.tsmiReadListOfFolder.Name = "tsmiReadListOfFolder";
-            this.tsmiReadListOfFolder.Size = new System.Drawing.Size(209, 26);
-            this.tsmiReadListOfFolder.Text = "Read list of folders";
-            this.tsmiReadListOfFolder.Click += new System.EventHandler(this.tsmiReadListOfFolder_Click);
             // 
             // Form1
             // 
@@ -429,7 +390,7 @@
         private System.Windows.Forms.ToolStripStatusLabel tsslTimeSpan;
         private System.Windows.Forms.ToolStripStatusLabel tsslStatus;
         private System.Windows.Forms.ToolStripStatusLabel tsslCurrentFile;
-        private System.Windows.Forms.Button btnStartSeach;
+        private System.Windows.Forms.Button btnStartSearch;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.ToolStripMenuItem tsmiLogShow;
         private System.Windows.Forms.ToolStripMenuItem tsmiClearLogFile;
@@ -438,11 +399,7 @@
         private System.Windows.Forms.ToolStripStatusLabel tsslFindedFiles;
         private System.Windows.Forms.ToolStripStatusLabel tsslAllFiles;
         private System.Windows.Forms.ListBox lbFindedFiles;
-        private System.Windows.Forms.TreeView tvFindedFiles;
-        private System.Windows.Forms.ListBox lbFiles;
-        private System.Windows.Forms.ToolStripProgressBar tsProgressBar;
         private System.Windows.Forms.ToolStripStatusLabel tsslFolder;
-        private System.Windows.Forms.ToolStripMenuItem tsmiReadListOfFolder;
     }
 }
 
