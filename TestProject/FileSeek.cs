@@ -3,159 +3,232 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace TestProject
 {
-     public struct Info
-    {
-        public int i { get; set; }
-        public bool? isIt { get; set; }    
- 
-        public Info(int i,bool? isIt)
-        {
-            this.i = i;
-            this.isIt = isIt;
-        }
-
-    }
 
     public enum SeekStatus
     {
-        Progress, Pause, Done
+        Progress, Pause, Done, Stopped
     }
 
     public class FilesSeek
     {
 
-        public SeekStatus Status { get; set; } = SeekStatus.Done;
-        //public Dictionary<int, string[]> Files { get; set; }
-        public TreeNode CurrentTreeNode { get; private set; }
-        public string[] Folders { get; set; }
+
+        public Dictionary<string, List<string>> Tree { get; private set; } = new Dictionary<string, List<string>>();
+
+        public List<string> Files { get; private set; }
+
+        public List<string> Folders { get; private set; }
+
+        public int CurrentIndex { get; private set; } = 0;
+        Regex Regex { get; set; }
+
         public string CurrentFile { get; private set; }
-        public string CurrentPath { get; private set; }
+        public string CurrentFolder { get; private set; }
 
-        public string textToFind { get; set; }
+        public int CountFindedFiles { get; private set; }
 
-        public int i=0;
-
+        public string StartPath { get; private set; }
         public int CurrentFileIndex { get; set; } = 0;
         public int CurrentFolderIndex { get; set; } = 0;
 
-//        public void LoadList(string Folder, string Pattern, bool AllDirectories)
-//        {
-//         //   Dictionary<int, string[]> files = new Dictionary<int, string[]>();
-//            try
-//            {
-//                Folders = Directory.GetDirectories(Folder, "*.", SearchOption.AllDirectories);
-//                try
-//                {
-//                    for(int i=0;i<Folders.Length;CurrentFolderIndex++)
-//                        Files.Add(i, Directory.GetFiles(Folder, Pattern, AllDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
-//                }
-//                catch (Exception ex)
-//                {
-//                    File.AppendAllText("log.txt", ex.Message);
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                File.AppendAllText("log.txt", ex.Message);
-//                //return null;
-//            }
-////            return files;
-//        }
+        public SeekStatus Status { get; set; } = SeekStatus.Done;
 
+        public int FilesAll { get => Files.Count; }
 
-        public Info Start(IProgress<Info> progress, TreeNode treeNode)
+        string pattern;
+        static public string Message { get; private set; } = "";
+
+        public FilesSeek()
         {
-            try {
-                Regex regex = new Regex(textToFind);//Optimize!
-                bool isIt = false;
-                CurrentTreeNode = treeNode;
-                CurrentPath = treeNode.Text;
-                string[] files = (string[])treeNode.Tag;
-                for (; CurrentFileIndex < files.Length; CurrentFileIndex++)
+            Files = new List<string>();
+            Tree = new Dictionary<string, List<string>>();
+        }
+
+
+        void GetFiles(string path, string pattern, List<string> files)
+        {
+            files.AddRange(Directory.GetFiles(path, pattern));
+            string[] dirs = Directory.GetDirectories(path);
+            foreach (string dir in dirs)
+            {
+                try
                 {
-                    CurrentFile = files[CurrentFileIndex];
+                    if (Directory.GetDirectories(dir).Length > 0) GetFiles(dir, pattern, files);
+                }
+                catch (Exception exc)
+                {
+                    File.AppendAllText("log.txt", $"{DateTime.Now.ToLocalTime().ToString()}:{exc.Message}\r\n");
+                }
+
+            }
+
+        }
+
+        List<string> EnumerateFiles(string path, string pattern)
+        {
+            List<string> list = new List<string>();
+            try
+            {
+                var filesFind = from file in Directory.EnumerateFiles(path,
+                            pattern, SearchOption.AllDirectories)
+                                select file;
+
+                foreach (var file in filesFind)
+                    list.Add(file);
+            }
+            catch (UnauthorizedAccessException UAEx)
+            {
+                Console.WriteLine(UAEx.Message);
+            }
+            catch (PathTooLongException PathEx)
+            {
+                Console.WriteLine(PathEx.Message);
+            }
+            catch (AccessViolationException AVEx)
+            {
+                Console.WriteLine(AVEx.Message);
+            }
+            catch (IOException IOEx)
+            {
+                Console.WriteLine(IOEx.Message);
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine(Ex.Message);
+            }
+        
+            return list;
+        }
+
+
+        public void Start(string startPath, string TextToFind, string Pattern)
+        {
+            //FoldersToList();
+            switch (Status)
+            {
+                case SeekStatus.Done:
+                case SeekStatus.Stopped:
+                    this.StartPath = startPath;
+                    Regex = new System.Text.RegularExpressions.Regex(TextToFind);
+                    CurrentIndex = 0;
+                    CurrentFileIndex = 0;
+                    CurrentFolderIndex = 0;
+                    CountFindedFiles = 0;
+                    this.pattern = Pattern;
+                    Folders = Directory.GetDirectories(StartPath).ToList();
+                    break;
+                case SeekStatus.Progress:
+                case SeekStatus.Pause:
+                    break;
+            }
+        }
+
+        public string Progress(IProgress<string> progress)
+        {            
+
+            //Start or continue search
+            for (; CurrentFolderIndex < Folders.Count; CurrentFolderIndex++)
+            {
+                try
+                {
+                    Files = Directory.GetFiles(Folders[CurrentFolderIndex], pattern, SearchOption.AllDirectories).ToList();
+                }
+                catch(Exception exc)
+                {
+                    File.AppendAllText("log.txt", $"{DateTime.Now.ToLocalTime().ToString()}:{exc.Message}\r\n");
+                    Console.WriteLine($"{DateTime.Now.ToLocalTime().ToString()}:{exc.Message}\r\n");
+                    continue;
+                }
+                for (; CurrentFileIndex < Files.Count; CurrentFileIndex++)
+                {
+                    CurrentFile = Files[CurrentFileIndex];
+                    CurrentIndex++;
+                    progress.Report(null);
+                    bool isIt = false;
                     switch (Status)
                     {
                         case SeekStatus.Progress:
                             {
-                                progress.Report(new Info(i, null));
-                                isIt = regex.IsMatch(File.ReadAllText(CurrentFile));
-                                progress.Report(new Info(i, isIt));
+                                try
+                                {
+
+                                    isIt = Regex.IsMatch(File.ReadAllText(CurrentFile));
+                                }
+                                catch (Exception exc)
+                                {
+                                    File.AppendAllText("log.txt", $"{DateTime.Now.ToLocalTime().ToString()}:{CurrentFile}:{exc.Message}\r\n");
+                                }
+                                if (isIt)
+                                {
+                                    string path = Path.GetDirectoryName(CurrentFile);
+                                    if (!Tree.ContainsKey(path)) Tree[path] = new List<string>();
+                                    Tree[path].Add(Path.GetFileName(Files[CurrentFileIndex]));
+                                    CountFindedFiles++;
+                                    progress.Report(CurrentFile);
+                                }
+                                else progress.Report(null);
                                 break;
                             }
+                        case SeekStatus.Stopped:
                         case SeekStatus.Pause:
-                            {
-                                Console.WriteLine("Pause");
-                                progress.Report(new Info(i, null));
-                                return new Info();
-                            }
                         case SeekStatus.Done:
                             {
-                                progress.Report(new Info(i, isIt));
-                                return new Info();
+                                progress.Report("Done");
+                                return "Done";
                             }
                     }
+
                 }
+                CurrentFileIndex = 0;
+            }
+            Status = SeekStatus.Done;
+            progress.Report(null);
+            return null;
+        }
+
+
+
+        public void SetFileSystemTreeView(TreeView tree, string startFolder)
+        {
+            Files.Clear();
+            try
+            {
+                //string sf = startFolder.Substring(0, startFolder.LastIndexOf('\\'));
+                //startFolder = (startFolder.Last<char>()=='\\')?startFolder.TrimEnd('\\'):startFolder;
+                TreeNode node = new TreeNode((startFolder.Last<char>() == '\\') ? startFolder.TrimEnd('\\') : startFolder); //sf.Last<char>()==':'?"":sf);
+                tree.Nodes.Add(node);
+                foreach(string path in Directory.GetDirectories(startFolder))
+                    GetFolderList(node, new DirectoryInfo(path));
             }
             catch (Exception exc)
             {
-                File.AppendAllText("log.txt", $"{DateTime.Now.ToLocalTime().ToString()}:{CurrentFile}:{exc.Message}\r\n");
-            }                
-            foreach (TreeNode tn in treeNode.Nodes)
-                Start(progress, tn);
-            Status = SeekStatus.Done;
-            progress.Report(new Info(-1, null));
-            return new Info();
+                File.AppendAllText("log.txt", $"{DateTime.Now.ToLocalTime().ToString()}:{exc.Message}\r\n");
+                Console.WriteLine($"{DateTime.Now.ToLocalTime().ToString()}:{exc.Message}\r\n");
+            }
         }
 
-        //public Info Start(IProgress<Info> progress)
-        //{
-
-        //    Regex regex = new Regex(textToFind);
-        //    bool isIt = false;
-        //    for (;CurrentFolderIndex<Folders.Length;CurrentFolderIndex++)
-        //    {
-        //        CurrentPath = Folders[i];
-        //        for (; CurrentFileIndex < Files[i].Length; CurrentFileIndex++)
-        //        {
-        //            CurrentFile = Files[CurrentFolderIndex][CurrentFileIndex];
-        //            try
-        //            {
-        //                switch (Status)
-        //                {
-        //                    case SeekStatus.Progress:
-        //                        {
-        //                            progress.Report(new Info(i, null));
-        //                            isIt = regex.IsMatch(File.ReadAllText(CurrentFile));
-        //                            progress.Report(new Info(i, isIt));
-        //                            break;
-        //                        }
-
-        //                    case SeekStatus.Pause:
-        //                        {
-        //                            Console.WriteLine("Pause");
-        //                            progress.Report(new Info(i, null));
-        //                             return new Info();
-        //                        }
-        //                    case SeekStatus.Done:
-        //                        {
-        //                            progress.Report(new Info(i, isIt));
-        //                            return new Info();
-        //                        }
-        //                }
-        //            }
-        //            catch (Exception exc)
-        //            {
-        //                File.AppendAllText("log.txt", $"{DateTime.Now.ToLocalTime().ToString()}:{CurrentFile}:{exc.Message}\r\n");
-        //            }
-        //        }
-        //    }
-        //    Status = SeekStatus.Done;
-        //    progress.Report(new Info(-1, null));
-        //    return new Info();
-        //}
+         void  GetFolderList(TreeNode ParentNode, DirectoryInfo dirInfo)
+        {
+            TreeNode childNode = new TreeNode(dirInfo.Name);
+            ParentNode.Nodes.Add(childNode);
+            try
+            {
+                foreach (var dir in dirInfo.GetDirectories())
+                   GetFolderList(childNode, dir);
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine($"{DateTime.Now.ToLocalTime().ToString()}:{exc.Message}\r\n");
+            }            
+        }
+        
     }
 }
+
+    
+    
+
