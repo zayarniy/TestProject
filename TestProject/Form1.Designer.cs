@@ -98,40 +98,40 @@
             // tsmiSetFolder
             // 
             this.tsmiSetFolder.Name = "tsmiSetFolder";
-            this.tsmiSetFolder.Size = new System.Drawing.Size(180, 26);
+            this.tsmiSetFolder.Size = new System.Drawing.Size(147, 26);
             this.tsmiSetFolder.Text = "Set folder";
             this.tsmiSetFolder.Click += new System.EventHandler(this.tsmiSetFolder_Click);
             // 
             // tsmiSave
             // 
             this.tsmiSave.Name = "tsmiSave";
-            this.tsmiSave.Size = new System.Drawing.Size(180, 26);
+            this.tsmiSave.Size = new System.Drawing.Size(147, 26);
             this.tsmiSave.Text = "Save";
             this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
             // 
             // tsmiLogShow
             // 
             this.tsmiLogShow.Name = "tsmiLogShow";
-            this.tsmiLogShow.Size = new System.Drawing.Size(180, 26);
+            this.tsmiLogShow.Size = new System.Drawing.Size(147, 26);
             this.tsmiLogShow.Text = "Show log";
             this.tsmiLogShow.Click += new System.EventHandler(this.tsmiLogShow_Click);
             // 
             // tsmiClearLogFile
             // 
             this.tsmiClearLogFile.Name = "tsmiClearLogFile";
-            this.tsmiClearLogFile.Size = new System.Drawing.Size(180, 26);
+            this.tsmiClearLogFile.Size = new System.Drawing.Size(147, 26);
             this.tsmiClearLogFile.Text = "Clear log";
             this.tsmiClearLogFile.Click += new System.EventHandler(this.tsmiClearLogFile_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(144, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(147, 26);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -214,6 +214,7 @@
             this.lbFindedFiles.ItemHeight = 20;
             this.lbFindedFiles.Location = new System.Drawing.Point(0, 0);
             this.lbFindedFiles.Name = "lbFindedFiles";
+            this.lbFindedFiles.ScrollAlwaysVisible = true;
             this.lbFindedFiles.Size = new System.Drawing.Size(715, 708);
             this.lbFindedFiles.TabIndex = 1;
             // 

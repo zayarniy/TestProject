@@ -14,42 +14,32 @@ namespace TestProject
     }
 
 
-
     static public class FilesSeek
     {
+        static public string CurrentFile { get; private set; }
+        static public string CurrentFolder { get; private set; }
+        static public SeekStatus Status { get; set; } = SeekStatus.Done;
+        static public int CountFindedFiles { get; private set; }
+        static public int CurrentIndex { get; private set; } = 0;
+
+
         static object locker =new object();
 
-        static List<string> Files { get; set; }
+        static List<string> Files { get; set; } = new List<string>();
 
         static List<string> Folders { get; set; } = new List<string>();
 
-        static public int CurrentIndex { get; private set; } = 0;
-
         static Regex Regex { get; set; }
 
-        static public string CurrentFile { get; private set; }
-        static public string CurrentFolder { get; private set; }
-
-        static public int CountFindedFiles { get; private set; }
-
-        static public string StartPath { get; private set; }
-        static public int CurrentFileIndex { get; set; } = 0;
-        static public int CurrentFolderIndex { get; set; } = 0;
-
-        static public SeekStatus Status { get; set; } = SeekStatus.Done;
+        static int CurrentFileIndex  = 0;
+        static int CurrentFolderIndex  = 0;
 
         static string pattern;
-
-        static FilesSeek()
-        {
-            Files = new List<string>();
-        }
-
+        static string StartPath;
 
 
         static public void Prepair(string startPath, string TextToFind, string Pattern)
         {
-            //FoldersToList();
             switch (Status)
             {
                 case SeekStatus.Done:
