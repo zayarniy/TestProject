@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TestProject
 {
@@ -50,6 +51,7 @@ namespace TestProject
                     CurrentFolderIndex = 0;
                     CountFindedFiles = 0;
                     pattern = Pattern;
+                    
                     Folders.Clear();
                     Folders.Add(startPath);
                     Folders.AddRange(Directory.GetDirectories(StartPath));

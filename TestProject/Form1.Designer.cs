@@ -47,7 +47,6 @@
             this.tsslCurrentFile = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslFolder = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.lbFindedFiles = new System.Windows.Forms.ListBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.tbFolder = new System.Windows.Forms.TextBox();
@@ -59,6 +58,7 @@
             this.btnPause = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.tvFindedFiles = new System.Windows.Forms.TreeView();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -197,7 +197,7 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.lbFindedFiles);
+            this.splitContainer1.Panel1.Controls.Add(this.tvFindedFiles);
             // 
             // splitContainer1.Panel2
             // 
@@ -206,17 +206,6 @@
             this.splitContainer1.SplitterDistance = 715;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 3;
-            // 
-            // lbFindedFiles
-            // 
-            this.lbFindedFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbFindedFiles.FormattingEnabled = true;
-            this.lbFindedFiles.ItemHeight = 20;
-            this.lbFindedFiles.Location = new System.Drawing.Point(0, 0);
-            this.lbFindedFiles.Name = "lbFindedFiles";
-            this.lbFindedFiles.ScrollAlwaysVisible = true;
-            this.lbFindedFiles.Size = new System.Drawing.Size(715, 708);
-            this.lbFindedFiles.TabIndex = 1;
             // 
             // flowLayoutPanel1
             // 
@@ -338,6 +327,14 @@
             // 
             this.errorProvider1.ContainerControl = this;
             // 
+            // tvFindedFiles
+            // 
+            this.tvFindedFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvFindedFiles.Location = new System.Drawing.Point(0, 0);
+            this.tvFindedFiles.Name = "tvFindedFiles";
+            this.tvFindedFiles.Size = new System.Drawing.Size(715, 708);
+            this.tvFindedFiles.TabIndex = 10;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -399,8 +396,8 @@
         private System.Windows.Forms.Button btnPause;
         private System.Windows.Forms.ToolStripStatusLabel tsslFindedFiles;
         private System.Windows.Forms.ToolStripStatusLabel tsslAllFiles;
-        private System.Windows.Forms.ListBox lbFindedFiles;
         private System.Windows.Forms.ToolStripStatusLabel tsslFolder;
+        private System.Windows.Forms.TreeView tvFindedFiles;
     }
 }
 

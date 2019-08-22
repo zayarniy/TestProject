@@ -54,7 +54,13 @@ namespace TestProject
                             tsslFileCounter.Text = $"Index:{FilesSeek.CurrentIndex}";
                             tsslFindedFiles.Text = $"Finded:{FilesSeek.CountFindedFiles}";
                             if (info != null)
-                                lbFindedFiles.Items.Add(info);
+                            {
+                                //lbFindedFiles.Items.Add(info);
+                                int getSeparator = info.IndexOf('\\');
+                                string tempfilename = info.Substring(getSeparator + 1, info.Length-getSeparator-1);
+                                AddFilename(tempfilename, tvFindedFiles);
+                                tvFindedFiles.ExpandAll();
+                            }
                             break;
                     }
                 }
@@ -79,7 +85,7 @@ namespace TestProject
                 tsslStatus.Text = "";
                 tsslTimeSpan.Text = $"Time spent:0";
                 Properties.Settings.Default.Save();                
-                lbFindedFiles.Items.Clear();
+                //lbFindedFiles.Items.Clear();
             }
         }
 
@@ -111,8 +117,7 @@ namespace TestProject
                         tbTemplate.Enabled = false;
                         tbFolder.Enabled = false;
                         btnStartSearch.Enabled = false;
-                        lbFindedFiles.Items.Clear();
-                        
+                        TreeViewInit(Path.GetPathRoot(tbFolder.Text), tvFindedFiles);
                         FilesSeek.Prepair(tbFolder.Text, tbFindingText.Text, tbTemplate.Text);
                         tsslStatus.Text = "Search in progress";
                         FilesSeek.Status = SeekStatus.Progress;
@@ -206,5 +211,54 @@ namespace TestProject
         {
             tsmiSetFolder.PerformClick();
         }
+
+        void TreeViewInit(string rootDir, TreeView tree)
+        {            
+            tree.Nodes.Clear();
+            TreeNode root = new TreeNode(rootDir);
+            tree.Nodes.Add(root);
+        }
+
+        void AddFilename(string filename, TreeView tree)
+        {
+            TreeNode root = tree.Nodes[0];
+            TreeNode node;
+
+            {
+                node = root;
+                foreach (string pathBits in filename.Split('\\'))
+                {
+                    node = AddNode(node, pathBits);
+                }
+            }
+        }
+
+
+        TreeNode AddNode(TreeNode node, string key)
+        {
+            if (node.Nodes.ContainsKey(key))
+            {
+                return node.Nodes[key];
+            }
+            else
+            {
+                return node.Nodes.Add(key, key);
+            }
+        }
+
+        static public void AddToTree(TreeNode tree, string filename)
+        {
+            //TreeNodeCollection nodes = tree.Nodes;
+            TreeNode currentNode = tree;
+            int separate = filename.IndexOf('\\') - 1;
+            string part = filename.Substring(0, separate);
+            foreach (TreeNode node in currentNode.Nodes)
+            {
+                if (node.Text == part) AddToTree(node.NextNode, filename.Substring(separate + 1, filename.Length));
+            }
+            currentNode.Text = part;
+        }
+
     }
+
 }
